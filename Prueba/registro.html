@@ -175,7 +175,7 @@
         
 
         <div class="d-grid">
-            <button type="submit" class="btn btn-purple">Registrarse</button>
+            <button type="submit" class="btn btn-purple" onclick="window.location.href='index.html'">Registrarse</button>
         </div>
 
         <div class="text-center extra-links">
@@ -208,6 +208,15 @@ function seleccionarRol(rol) {
     //guardar el valor
     inputRol.value = rol;
 }
+
+
+function registrar() {
+   //dirige al index por el momento no funciona xd
+    window.location.href = "index.html";
+}
+
+
+<button class="btn btn-purple" onclick="registrar()">Registrarse</button>
 </script>
 </body>
 </html>
