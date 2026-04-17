@@ -61,6 +61,7 @@
             background-color: #6a0dad;
             height: 25px;
         }
+
         .btn-primary:hover {
             background-color: #8a2be2;
             color: white;
@@ -106,13 +107,34 @@
         </div>
 
         <div id="contenedorMaterias" class="row g-3 mb-4">
-                    <!-- la clase "col-md-#" es la que controla cuantos elementos van dentro de las columnas antes de cambiar de linea.
+            <!-- la clase "col-md-#" es la que controla cuantos elementos van dentro de las columnas antes de cambiar de linea.
                          bootstrap utiliza un sistema de 12 columnas para colocar sus elementos, asi que colocando un valor de 4 se haria
                          el calculo 12/4 y terminaria con 3 elementos por fila.-->
             <div class="col-md-4">
                 <div class="card card-custom">
-                   <a href="#" class="btn btn-primary">Materia de ejemplo</a>
+                    <a href="#" class="btn btn-primary">Materia de ejemplo</a>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalAsesores" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Título del Modal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div id="modalCuerpo" class="modal-body">
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary">Guardar</button>
+                </div>
+
             </div>
         </div>
     </div>

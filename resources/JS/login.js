@@ -6,7 +6,6 @@ window.addEventListener("load", function () {
 function formSubmit(event) {
 
     event.preventDefault();
-
     
 
         let correo = document.getElementById('correo').value.trim();
