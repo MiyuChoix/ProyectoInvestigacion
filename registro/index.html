@@ -98,6 +98,19 @@
             top: 8px;
             cursor: pointer;
         }
+
+          .extra-links {
+            font-size: 14px;
+        }
+
+        .extra-links a {
+            color: #6a0dad;
+            text-decoration: none;
+        }
+
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -162,8 +175,14 @@
         
 
         <div class="d-grid">
-            <button type="submit" class="btn btn-purple">Registrarse</button>
+            <button type="submit" class="btn btn-purple" onclick="window.location.href='index.html'">Registrarse</button>
         </div>
+
+        <div class="text-center extra-links">
+            <br>
+            <span>Ya tienes una cuenta? <a href="login.html">Inicia sesion</a></span>
+        </div>
+
 
     </form>
 </div>
@@ -189,6 +208,15 @@ function seleccionarRol(rol) {
     //guardar el valor
     inputRol.value = rol;
 }
+
+
+function registrar() {
+   //dirige al index por el momento no funciona xd
+    window.location.href = "index.html";
+}
+
+
+<button class="btn btn-purple" onclick="registrar()">Registrarse</button>
 </script>
 </body>
 </html>
