@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <title>Modal Bootstrap</title>
+
+<!--===============================================ESTILOOOOOOOOOOO===========================================================-->
+   <style>
+/*CSS NUEVO AGREGADO*/ 
+
+/* Estilos para el movimiento de las vistas */
+.offcanvas-sliding-wrapper {
+    display: flex;
+    width: 200%; 
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.view-section {
+    width: 50%; 
+    box-sizing: border-box;
+}
+
+/* clase es la que activa el desplazamiento */
+.show-form {
+    transform: translateX(-50%);
+}
+
+/* Estilo para los inputs oscuros */
+.input-dark {
+    background: #2b2b2b !important;
+    border: 1px solid #444 !important;
+    color: white !important;
+}    
+
+    /* Fondo gris */
+.overlay-reporte {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.6); /* gris oscuro transparente */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1095; /* debajo del dialog pero encima del modal */
+}
+
+/* Caja del mensaje */
+.overlay-contenido {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+/* etilo base del boton */
+.btn-animado {
+    position: relative;
+    background: none;
+    border: none;
+    color: white; 
+    font-weight: bold;
+    padding: 8px 0;
+    margin-bottom: 15px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    display: inline-block; /*para que la línea mida lo mismo que el texto */
+    width: fit-content;    /* la linea se ajustará al texto */
+}
+
+/*  linea en el boton*/
+.btn-animado::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px; 
+    background-color: #ffffff; /*color de lla animacion de la linea*/
+    
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.300s ease-out;
+}
+
+/* ffecto al pasar el mouse offcanva */
+.btn-animado:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/*esto es para que el offcanvas salga delante del modal del perfil, boostraap maneja 1045 capas, por eso estos valores son tan altos*/
+#editarPerfil{
+    z-index: 1100;
+}
+
+.offcanvas-backdrop {
+    z-index: 1090 !important;
+}
+
+/*FIN DE CSS NUEVO AGREGADO*/  
+    
+/*estilo del dialogo que sale cunado se reporta el perfil*/     
+  dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: auto;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+}
+/* pinta la parte superior del modal */
+.modal-header {
+    background-color: #65107d;
+    border-bottom: none;
+    padding: 1.5rem; 
+}
+
+/*color del texto y el botón de cerrar */
+.modal-header .modal-title {
+    color: white !important;
+    font-weight:bold;
+}
+
+.perfil-container{
+  position: relative;
+  width: 150px;
+  margin: auto;
+}
+
+.perfil-img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 3px solid #ccc;
+}
+
+.cambiar{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #000;
+  color: #fff;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+
+/* Estilo de las cards de materias */
+.materia-card {
+    background-color: #690869; 
+    color: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    border-bottom: 5px solid #683265; /* sombra inferior de la card*/
+    transition: transform 0.2s;
+}
+
+.materia-card:hover {
+    transform: scale(1.02);
+    background-color: #852285;
+}
+
+
+   </style>
+<!--==========================================FIN DEL ESTILOOOOOOOOOOO========================================================-->   
+
+</head>
+
+<body class="d-flex justify-content-center align-items-center vh-100">
+
+<!-- boton para abir el boton(modal) esto se bebe de conectar al index -->
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModal">
+        Ver Mi Perfil
+    </button>
+
+<!-- modal bootstrap -->
+    <div class="modal fade" id="miModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"> <!--tamaño del modal-->
+            <div class="modal-content">
+                
+<!--header modal-->
+                <div class="modal-header">
+                    <h5 class="modal-title">Perfil del Alumno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+<!--body modal-->
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            
+
+<!--foto de perfil-->
+            <div class="col-auto">
+                <div class="perfil-container m-0"> <img id="imagenPerfil" class="perfil-img">
+                    
+                    <input type="file" id="inputFile" hidden>
+                    
+
+                    <div class="cambiar" onclick="document.getElementById('inputFile').click()">
+                        ✎
+                    </div> 
+                </div>
+            </div>
+
+<!--se metio en un div todo para poder meter el boton editar-->
+            <div class="col">
+    <div class="d-flex  align-items-center">
+        
+        <div>
+<!--datos personales-->            
+            <h2 id="nombrePerfil" class="fw-bold mb-1">Nombre del Alumno</h2>
+            <p id="carreraPerfil" class="text-muted fs-5 mb-1">Estudiante de Programación</p>
+            <span class="badge bg-success">Alumno</span>
+        </div>
+<!--boton editar-->
+        <button class="btn btn-outline-primary ms-auto "
+                data-bs-toggle="offcanvas"
+                data-bs-target="#editarPerfil">
+            <i class="bi bi-pencil-square"></i> Editar
+        </button>
+
+    </div>
+
+</div>
+<!--HR GOOD-->
+            <hr class="my-4"> <h4 class="text-start mb-3">Disponibilidad de materias</h4>
+
+ <!--HR GOOD-->  
+ 
+
+
+        </div>
+    </div>
+</div>         
+
+<div>
+<!--Footer-->
+<div class="modal-body pt-10">
+    <h4 class="text-start mb-3">Comunicación</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-3 text-start">
+        <div class="col">
+            <div class="mb-2"><i class="bi bi-whatsapp me-2"></i><a id="telPerfil" href="https://share.google/8kvI40FS20ZBKB3l5" class="text-decoration-underline text-dark">+52 (614) 358-3700</a></div>
+            <div><i class="bi bi-discord me-2"></i><a id="discordPerfil" href="https://discord.com/" class="text-decoration-underline text-dark">642599840110608405</a></div>
+        </div>
+        <div class="col">
+            <div class="mb-2"><i class="bi bi-facebook me-2"></i><a id="facebookPerfil" href="https://share.google/M7yOojw2lSNSb2cEx" class="text-decoration-underline text-dark">F. Morgan</a></div>
+            <div><i class="bi bi-instagram me-2"></i><a id="instagramPerfil" href="https://share.google/FhubDlpC1O3xDbIzH" class="text-decoration-underline text-dark">@ajusa._</a></div>
+        </div>
+        <div class="col">
+            <div class="mb-2"><i class="bi bi-twitter me-2"></i><a id="twitterPerfil" href="https://share.google/tG7kUzLoM4cRHLwTL" class="text-decoration-underline text-dark">@F.Morgan</a></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer sticky-footer align-items-center">
+<!--dialogo-->    
+    <dialog id="ms" style="width: 400px;">
+    <p class="text-center">¡La cuenta ha sido reportada con exito!.</p>
+    <div class="text-center">
+<!--Boton de cerrar-->         
+    <button id="cerrar" class="btn btn-danger">Cerrar</button>
+    </div>
+    </dialog>
+<!--Boton de reportar perfil-->    
+    <button id="show1" class="btn btn-danger">Reportar perfil</button>
+    
+
+
+</div>
+</div>
+
+<!--OFFCANVA-->
+<div class="offcanvas offcanvas-start bg-dark" id="editarPerfil">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <h1 class="offcanvas-title text-white fs-5">EDITAR PERFIL</h1>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body p-0 overflow-hidden">
+        <div id="slidingWrapper" class="offcanvas-sliding-wrapper">
+
+<!--BOTONES del offcanva-->
+            <div class="view-section p-4">
+                <button class="btn-animado w-100 text-start" type="button" onclick="toggleView(true)">
+                    <i class="bi bi-person-circle me-2"></i> Información Personal
+                </button>
+                <button class="btn-animado w-100 text-start" type="button">
+                    <i class="bi bi-mortarboard me-2"></i> Información Académica
+                </button> 
+                <button class="btn-animado w-100 text-start" type="button" onclick="toggleContact(true)">
+    <i class="bi bi-envelope-at me-2"></i> Detalles de Contacto
+</button>
+            </div>
+
+            
+            <div class="view-section p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <button class="btn btn-sm btn-outline-light me-2" onclick="toggleView(false)">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+                    <span class="fw-bold text-white">DATOS PERSONALES</span>
+                </div>
+
+<!--FORM -->
+                <label class="text-secondary small fw-bold">NOMBRE DE PERFIL</label>
+                <input type="text" id="editNombre" class="form-control input-dark mb-3" placeholder="Miyuki">
+
+                <label class="text-secondary small fw-bold">CARRERA</label>
+                <input type="text" id="editCarrera" class="form-control input-dark mb-3" placeholder="Programación">
+
+                <label class="text-secondary small fw-bold">AÑO DE NACIMIENTO</label>
+                <input type="number" id="editAnio" class="form-control input-dark mb-3" placeholder="2000">
+
+                <button class="btn btn-primary w-100 mt-2" onclick="guardarPerfil()">
+                    Listo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+                </div>
+
+            </div>
+        </div>
+    
+
+<!--===================================================SCRIIIPTTTTT==============================================================-->   
+    <script>
+//IMAGEN para que se modifique la imagen
+
+        const input = document.getElementById("inputFile");
+const imagen = document.getElementById("imagenPerfil");
+
+/* Cargar imagen guardada */
+window.onload = function() {
+  const guardada = localStorage.getItem("fotoPerfil");
+  if (guardada) {
+    imagen.src = guardada;
+  }
+};
+
+/* Cambiar imagen */
+input.addEventListener("change", function() {
+  const archivo = this.files[0];
+
+  if (archivo) {
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      imagen.src = e.target.result;
+
+      // Guardar en localStorage
+      localStorage.setItem("fotoPerfil", e.target.result);
+    }
+
+    reader.readAsDataURL(archivo);
+  }
+});
+
+// boton reportar
+
+window.addEventListener("load", function() {
+            let mensaje = document.getElementById('ms');
+            let obj_btn1 = document.getElementById("show1");
+           obj_btn1.addEventListener("click", function(){
+             mensaje.close();
+            mensaje.showModal();
+
+           });
+
+            let obj_cerrar = document.getElementById("cerrar");
+            obj_cerrar.addEventListener("click", function(){
+             mensaje.close();
+
+
+          });   
+
+          }); 
+//////////////////////////////////////////////////////////////////          
+// funcion para dezplar el menu
+function toggleView(showForm) {
+    const wrapper = document.getElementById('slidingWrapper');
+    if (showForm) {
+        wrapper.classList.add('show-form');
+    } else {
+        wrapper.classList.remove('show-form');
+    }
+}
+
+// vuelve al perfil principal cuando se cierre el panel lateral
+document.getElementById('editarPerfil').addEventListener('hidden.bs.offcanvas', function () {
+    toggleView(false);
+});   
+
+// Cargar datos guardados al iniciar
+window.addEventListener("load", function () {
+    const nombre = localStorage.getItem("nombrePerfil");
+    const carrera = localStorage.getItem("carreraPerfil");
+
+    if (nombre) {
+        document.getElementById("nombrePerfil").textContent = nombre;
+        document.getElementById("editNombre").value = nombre;
+    }
+
+    if (carrera) {
+        document.getElementById("carreraPerfil").textContent = carrera;
+        document.getElementById("editCarrera").value = carrera;
+    }
+});
+
+// guardar datos del formulario
+function guardarPerfil() {
+    const nombre = document.getElementById("editNombre").value;
+    const carrera = document.getElementById("editCarrera").value;
+
+    // guardar en localStorage
+    localStorage.setItem("nombrePerfil", nombre);
+    localStorage.setItem("carreraPerfil", carrera);
+
+    // reflejar en el perfil principal
+    document.getElementById("nombrePerfil").textContent = nombre;
+    document.getElementById("carreraPerfil").textContent = carrera;
+
+    // regresar vista
+    toggleView(false);
+}
+
+
+    </script>
+<!--===============================================FIN DEL SCRIIIPTTTTT===========================================================-->       
+</body>
+</html>
