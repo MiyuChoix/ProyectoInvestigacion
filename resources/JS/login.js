@@ -30,7 +30,7 @@ function formSubmit(event) {
             .then(datos => {
                 if (datos.mensaje == "error") {
                     switch (datos.error) {
-                        case 1: console.log("La contrasena no es correcta. N. Error: 1");
+                        case 1: console.log("No se, este error es el 1ro xd. N. Error: 1");
                             break;
 
                         case 2: console.log("Los datos no llegaron al PHP. N. Error: 2");
@@ -42,8 +42,14 @@ function formSubmit(event) {
                         case 101: console.log("Error en la base de datos, no retorno filas. N. Error: 101");
                             break;
 
+                        case 103: console.log("La contrasena no es correcta. N. Error: 103");
+                            break;
+
                         default: console.log("Error desconocido.");
                             break;
+                    }
+                    if(datos.debug){
+                        console.log(datos.debug);
                     }
                 } else if (datos.mensaje == "OK") {
                    window.location = "/cositas/Asesorias";

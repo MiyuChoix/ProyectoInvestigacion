@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <title>Modal Bootstrap</title>
+
+<!--===============================================ESTILOOOOOOOOOOOwO===========================================================-->
+   <style>
+    
+/*estilo del dialogo que sale cunado se reporta el perfil*/     
+  dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: auto;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+}
+/* pinta la parte superior del modal */
+.modal-header {
+    background-color: #65107d;
+    border-bottom: none;
+    padding: 1.5rem; 
+}
+
+/*color del texto y el botón de cerrar */
+.modal-header .modal-title {
+    color: white !important;
+    font-weight:bold;
+}
+
+.perfil-container{
+  position: relative;
+  width: 150px;
+  margin: auto;
+}
+
+.perfil-img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 3px solid #ccc;
+}
+
+.cambiar{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #000;
+  color: #fff;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Contenedor con scroll (osea el que tiene las cards de las materias) */
+.scroll-container {
+    max-height: 250px;
+    overflow-y: auto; 
+    overflow-x: hidden;
+    background-color: #e9e9e9;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+/* Estilo de las cards de materias */
+.materia-card {
+    background-color: #690869; 
+    color: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    border-bottom: 5px solid #683265; /* sombra inferior de la card*/
+    transition: transform 0.2s;
+}
+
+.materia-card:hover {
+    transform: scale(1.02);
+    background-color: #852285;
+}
+
+/*  coso para que la barra de scroll se vea mas limpio*/
+.scroll-container::-webkit-scrollbar {
+    width: 8px;
+    
+}
+.scroll-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+   </style>
+<!--==========================================FIN DEL ESTILOOOOOOOOOOO========================================================-->   
+
+</head>
+
+<body class="d-flex justify-content-center align-items-center vh-100">
+
+<!-- boton para abir el boton(modal) esto se bebe de conectar al index -->
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModal">
+        Ver Perfil
+    </button>
+
+<!-- modal bootstrap -->
+    <div class="modal fade" id="miModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"> <!--tamaño del modal-->
+            <div class="modal-content">
+                
+<!--header modal-->
+                <div class="modal-header">
+                    <h5 class="modal-title">Perfil del Asesor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+<!--body modal-->
+<div class="modal-body">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            
+
+<!--foto de perfil-->
+            <div class="col-auto">
+                <div class="perfil-container m-0"> <img id="imagenPerfil" class="perfil-img">
+                    <!-- COSO PARA  QUE EL USAURIO PUEDA EDITAR LA FOTO DE PERFIL
+                    <input type="file" id="inputFile" hidden>
+                    -->
+
+                    <!--<div class="cambiar" onclick="document.getElementById('inputFile').click()">
+                        ✎
+                    </div> -->
+                </div>
+            </div>
+<!--Datos de lado derecho-->
+            <div class="col text-start">
+                <h2 class="fw-bold mb-1">Nombre del Alumno (Asesor)</h2>
+                <p class="text-muted fs-5">Estudiante de Programación</p>
+                <span class="badge bg-primary">Asesor</span>
+            </div>
+<!--HR GOOD-->
+            <hr class="my-4"> <h4 class="text-start mb-3">Disponibilidad de materias</h4>
+
+ <!--HR GOOD-->  
+ 
+ <!--Contenedor con scroll (TIENE CSS)-->
+<div class="scroll-container">
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        <div class="col"><div class="materia-card">Materia 2</div></div>
+        <div class="col"><div class="materia-card">Materia 9</div></div>
+        <div class="col"><div class="materia-card">Materia 16</div></div>
+        <div class="col"><div class="materia-card">Materia 3</div></div>
+        <div class="col"><div class="materia-card">Materia 10</div></div>
+        <div class="col"><div class="materia-card">Materia 17</div></div>
+        <div class="col"><div class="materia-card">Materia 4</div></div>
+        <div class="col"><div class="materia-card">Materia 11</div></div>
+        <div class="col"><div class="materia-card">Materia 18</div></div>
+        
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>         
+
+<div>
+
+<!--Footer-->
+<div class="modal-body pt-10">
+    <h4 class="text-start mb-3">Comunicación</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-3 text-start">
+        <div class="col">
+            <div class="mb-2"><i class="bi bi-whatsapp me-2"></i><a href="https://share.google/8kvI40FS20ZBKB3l5" class="text-decoration-underline text-dark">+52 (614) 358-3700</a></div>
+            <div><i class="bi bi-discord me-2"></i><a href="https://discord.com/" class="text-decoration-underline text-dark">642599840110608405</a></div>
+        </div>
+        <div class="col">
+            <div class="mb-2"><i class="bi bi-facebook me-2"></i><a href="https://share.google/M7yOojw2lSNSb2cEx" class="text-decoration-underline text-dark">F. Morgan</a></div>
+            <div><i class="bi bi-instagram me-2"></i><a href="https://share.google/FhubDlpC1O3xDbIzH" class="text-decoration-underline text-dark">@ajusa._</a></div>
+        </div>
+        <div class="col">
+            <div class="mb-2"><i class="bi bi-twitter me-2"></i><a href="https://share.google/tG7kUzLoM4cRHLwTL" class="text-decoration-underline text-dark">@F.Morgan</a></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer sticky-footer align-items-center">
+<!--dialogo-->    
+    <dialog id="ms" style="width: 400px;">
+    <p class="text-center">¡La cuenta ha sido reportada con exito!.</p>
+    <div class="text-center">
+<!--Boton de cerrar-->         
+    <button id="cerrar" class="btn btn-danger">Cerrar</button>
+    </div>
+    </dialog>
+<!--Boton de reportar perfil-->    
+    <button id="show1" class="btn btn-danger">Reportar perfil</button>
+    
+</div>
+</div>
+                </div>
+
+            </div>
+        </div>
+    
+
+<!--===================================================SCRIIIPTTTTT==============================================================-->   
+    <script>
+        const input = document.getElementById("inputFile");
+        const imagen = document.getElementById("imagenPerfil");
+
+//carga imagen guardada
+window.onload = function() {
+  const guardada = localStorage.getItem("fotoPerfil");
+  if (guardada) {
+    imagen.src = guardada;
+  }
+};
+
+// boton reportar
+
+window.addEventListener("load", function() {
+            let mensaje = document.getElementById('ms');
+            let obj_btn1 = document.getElementById("show1");
+           obj_btn1.addEventListener("click", function(){
+             mensaje.close();
+            mensaje.showModal();
+
+           });
+
+            let obj_cerrar = document.getElementById("cerrar");
+            obj_cerrar.addEventListener("click", function(){
+             mensaje.close();
+
+
+          });   
+
+          });  
+
+    </script>
+<!--===============================================FIN DEL SCRIIIPTTTTT===========================================================-->       
+</body>
+</html>
