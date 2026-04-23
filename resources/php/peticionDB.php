@@ -43,7 +43,7 @@ if(is_null($conn)){
         $registro = $stmt->fetch(); 
         $mensaje = $registro;
     }else{
-        $mensaje = "Error en la base de datos, no retorno filas";
+        $mensaje = "2 posible errores. La base de datos no retorno filas o el usuario no existe.";
         $error = 101;
     }
 

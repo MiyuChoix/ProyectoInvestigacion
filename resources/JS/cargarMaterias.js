@@ -32,7 +32,7 @@ document.querySelector(".search-btn").addEventListener("click", () => {
         .then(datos => {
             if(datos.mensaje == "error"){
                 switch (datos.error) {
-                        case 1: console.log("La contrasena no es correcta. N. Error: 1");
+                        case 1: console.log("No se. N. Error: 1");
                             break;
 
                         case 100: console.log("La conexion es nula en el PHP. N. Error: 100");
@@ -56,6 +56,34 @@ document.querySelector(".search-btn").addEventListener("click", () => {
         });
 
 });
+
+function renderMaterias(arreglo) {
+    let contenedor = document.getElementById("contenedorMaterias");
+    contenedor.innerHTML = '';
+
+    arreglo.forEach(materia => {
+
+        let divCol = document.createElement("div");
+        divCol.classList.add("col-md-4");
+
+        let divCard = document.createElement("div");
+        divCard.classList.add("card", "card-custom");
+
+        let boton = document.createElement("button");
+        boton.classList.add("btn", "btn-primary");
+        boton.setAttribute("data-bs-toggle", "modal");
+        boton.setAttribute("data-bs-target", "#modalAsesores");
+        boton.textContent = materia.nombre;
+
+        boton.addEventListener("click", () => {
+            cargarModalAsesores(materia.idMateria);
+        });
+
+        divCard.appendChild(boton);
+        divCol.appendChild(divCard);
+        contenedor.appendChild(divCol);
+    });
+}
 
 function cargarModalAsesores(idMateria) {
 
@@ -105,7 +133,7 @@ function cargarModalAsesores(idMateria) {
                     boton.classList.add("btn", "btn-primary");
                     boton.textContent = asesor.nombre + " " + asesor.apellidos + "\n";
                     boton.addEventListener("click", () => {
-                        window.location = "/cositas/Asesorias/perfil/asesor/?idAsesor=" + asesor.idAsesor;
+                        window.location = "/cositas/Asesorias/perfil/asesor_ajeno/?idAsesor=" + asesor.idAsesor;
                     });
 
 
@@ -127,30 +155,3 @@ function cargarModalAsesores(idMateria) {
         });
 }
 
-function renderMaterias(arreglo) {
-    let contenedor = document.getElementById("contenedorMaterias");
-    contenedor.innerHTML = '';
-
-    arreglo.forEach(materia => {
-
-        let divCol = document.createElement("div");
-        divCol.classList.add("col-md-4");
-
-        let divCard = document.createElement("div");
-        divCard.classList.add("card", "card-custom");
-
-        let boton = document.createElement("button");
-        boton.classList.add("btn", "btn-primary");
-        boton.setAttribute("data-bs-toggle", "modal");
-        boton.setAttribute("data-bs-target", "#modalAsesores");
-        boton.textContent = materia.nombre;
-
-        boton.addEventListener("click", () => {
-            cargarModalAsesores(materia.idMateria);
-        });
-
-        divCard.appendChild(boton);
-        divCol.appendChild(divCard);
-        contenedor.appendChild(divCol);
-    });
-}
