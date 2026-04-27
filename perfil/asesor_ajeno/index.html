@@ -13,6 +13,7 @@
     <title>Perfil</title>
 
     <style>
+
         /* dialog */
         dialog {
             position: fixed;
@@ -124,9 +125,7 @@
                             <input type="file" id="inputFile" hidden>
 
 
-                            <div class="cambiar" onclick="document.getElementById('inputFile').click()">
-                                ✎
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -184,6 +183,50 @@
                         </div>
                     </dialog>
 
+<!-- OVERLAY -->
+    <div id="overlay" style="
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background-color: #363940;
+        z-index: 9999;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        
+    ">
+        <img src="imagen/popo.png" alt="Reportegato" style="
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        "
+        >
+        
+    <div style="
+    position: 
+    relative; 
+    z-index: 10; 
+    align-self: 
+    flex-start;">
+        <a href="/ProyectoInvestigacion/index.html" class="btn-animado w-100 text-start text-white ">← Regresar</a>
+    </div>
+
+    <div style="
+    position: relative; 
+    z-index: 10; 
+    text-align:center; 
+    margin-top: auto; 
+    padding-bottom: 40px;">
+        <h2 style="color: white; font-weight: bold; font-size: clamp(1.8rem, 4vw, 3.5rem); margin-bottom: 0;">Whoops...</h2>
+        <p style="color: #ccc; font-size: clamp(1rem, 2vw, 1.5rem);">Este perfil no está disponible.</p>
+    </div>
+</div>
+
                     <button id="show1" class="btn btn-danger">
                         Reportar perfil
                     </button>
@@ -234,6 +277,7 @@
 
             let mensaje = document.getElementById('ms');
             let btn = document.getElementById("show1");
+            let overlay = document.getElementById("overlay");
 
             btn.addEventListener("click", function () {
                 mensaje.showModal();
@@ -241,6 +285,8 @@
 
             document.getElementById("cerrar").addEventListener("click", function () {
                 mensaje.close();
+
+                 overlay.style.display = "flex";
             });
 
         });
