@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +12,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>index</title>
     <style>
+        body {
+            background-color: #e3d5f0;
+        }
+
         .navbar-custom {
             background: linear-gradient(90deg, #6a0dad, #8a2be2);
         }
@@ -47,14 +55,7 @@
         .card-custom {
             border-radius: 15px;
             overflow: hidden;
-        }
-
-        .btn-primary {
-            background-color: #6a0dad;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            padding: 20px;
+            border: none;
         }
 
         .card-footer-custom {
@@ -62,11 +63,58 @@
             height: 25px;
         }
 
-        .btn-primary:hover {
-            background-color: #8a2be2;
-            color: white;
+        .materia-btn{
 
+    background-color: #6a0dad;
+    color: white;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+}
+
+.materia-btn:hover{
+
+    background-color: #8a2be2;
+
+    transform: translateY(-2px);
+
+}
+
+        /* Estilo para modal de asesores */
+        .asesor-card {
+            border-radius: 18px;
+            transition: all 0.25s ease;
+            background: white;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
+
+        .asesor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .foto-asesor {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+        }
+
+        .ver-perfil-btn {
+            border-radius: 10px;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
     </style>
 </head>
 
@@ -86,9 +134,18 @@
                         <a class="nav-link" href="#">Mis sesiones</a>
                     </li>
                 </ul>
+
+                <?php if ($_SESSION['ROL'] === 'asesor'): ?>
+
+                    <button class="btn btn-success me-3"
+                        id="btnInvitar">
+                        Iniciar asesoría
+                    </button>
+
+                <?php endif; ?>
                 <div>
-                    <a class="navbar-brand" href="#">
-                        <img src="/img/image.png" class="profile-img">
+                    <a class="navbar-brand" href="/cositas/Asesorias/perfil/?rol=<?php echo $_SESSION['ROL']; ?>&id=<?php echo $_SESSION['ID']; ?>">
+                        <img src="/cositas/Asesorias/resources/uploads/perfiles/perfil_<?php echo $_SESSION['ROL'] . "_" . $_SESSION['ID']; ?>.png" class="profile-img">
                     </a>
                 </div>
             </div>
@@ -130,6 +187,6 @@
     </div>
 </body>
 
-<script src="/cositas/Asesorias/resources/js/cargarMaterias.js"></script>
+<script src="/cositas/Asesorias/resources/js/cargarMaterias.js?v=" <?php echo time(); ?>></script>
 
 </html>

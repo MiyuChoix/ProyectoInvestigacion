@@ -2,7 +2,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once($_SERVER['DOCUMENT_ROOT'] . './cositas/Asesorias/resources/php/conn.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/cositas/Asesorias/resources/php/conn.php');
+session_start();
 
 $obj_conexion = new ConexionBD();
 $conn = $obj_conexion->getConexion();
@@ -28,63 +29,58 @@ if (isset($datos_request['correo']) && isset($datos_request['pass'])) {
         $error = 104;
     } else {
 
-        $qry_ingresar = "SELECT idAsesor, contrasena
-            FROM asesores
-            where correo = :correo";
+        $tablas = [
+            [
+                "tabla" => "asesores",
+                "id" => "idAsesor",
+                "rol" => "asesor"
+            ],
+            [
+                "tabla" => "estudiantes",
+                "id" => "idEstudiante",
+                "rol" => "estudiante"
+            ]
+        ];
 
+        foreach ($tablas as $item) {
 
-        $stmt = $conn->prepare($qry_ingresar);
-        // se le asigna un valor a la variable :correo, dentro del query
-        $stmt->bindParam(':correo', $correo);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
+            $query = "
+            SELECT {$item['id']} AS id, contrasena
+            FROM {$item['tabla']}
+            WHERE correo = :correo
+        ";
 
-        if ($stmt->rowCount() == 1) {
-
-            $registro = $stmt->fetch();
-
-            //$hash = $registro['contrasena'];
-            //intente implementar password_verify($pass, $hash) en la condicion del if, pero NO FUNCIONA, NO TENGO MALDITA IDEA DE PORQUE, HIJUEPUT
-            if ($pass == $registro['contrasena']) {
-                $mensaje = "OK";
-                $error = 0;
-                //sesion ok
-            }else{
-                $error = 103;
-                // $debug = "Contrasena de la DB: " . $hash . ", Contrasena ingresada: " . $pass;
-            }
-        } else {
-
-
-            $qry_ingresar = "SELECT idEstudiante, contrasena
-                FROM estudiantes
-                where correo = :correo";
-
-
-            $stmt = $conn->prepare($qry_ingresar);
+            $stmt = $conn->prepare($query);
             $stmt->bindParam(':correo', $correo);
-            $stmt->setFetchMode(PDO::FETCH_ASSOC);
             $stmt->execute();
 
+            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $count = $stmt->rowCount();
+            if ($registro) {
 
-            if ($stmt->rowCount() == 1) {
+                if (
+                    $pass == $registro['contrasena'] ||
+                    password_verify($pass, $registro['contrasena'])
+                ) {
 
-                $registro = $stmt->fetch();
-                // $hash = $registro['contrasena'];
-                if ($pass == $registro['contrasena']) {
+                    session_regenerate_id(true);
+
+                    $_SESSION['ID'] = $registro['id'];
+                    $_SESSION['ROL'] = $item['rol'];
+                    $_SESSION['BLOCK'] = false;
+                    $_SESSION['ACCESO'] = time();
+
                     $mensaje = "OK";
                     $error = 0;
-                    //sesion ok
-                }else{
+                } else {
+
                     $error = 103;
-                    // $debug = "Contrasena de la DB: " . $registro['contrasena'] . ", Contrasena ingresada: " . $pass;
                 }
 
-            } else {
-                $error = 101;
+                break;
             }
+
+            $error = 101;
         }
     }
 } else {
@@ -99,4 +95,5 @@ $datos = [
 
 header('Content-type: application/json; charset=utf-8');
 echo json_encode($datos)
+
 ?>

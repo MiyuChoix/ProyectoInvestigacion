@@ -55,8 +55,13 @@ CREATE TABLE `asesores` (
   `fechaRegistro` date DEFAULT current_timestamp(),
   `nombre` varchar(60) NOT NULL,
   `apellidos` varchar(60) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `discord` varchar(100) DEFAULT NULL,
+  `instagram` varchar(100) DEFAULT NULL,
+  `facebook` varchar(150) DEFAULT NULL,
+  `twitter` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idAsesor`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='ola';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='ola';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +70,7 @@ CREATE TABLE `asesores` (
 
 LOCK TABLES `asesores` WRITE;
 /*!40000 ALTER TABLE `asesores` DISABLE KEYS */;
-INSERT INTO `asesores` VALUES (5,'l23550747@chihuahua2.tecnm.mx',NULL,'Holamundo_1','IINF','2026-04-19','Juan Pablo','Saenz Lopez');
+INSERT INTO `asesores` VALUES (5,'l23550747@chihuahua2.tecnm.mx',NULL,'Holamundo_1','IINF','2026-04-19','Juan Pablo','Saenz Lopez','6143583700','642599840110608405','ajusa._','ImMaxmare',''),(6,'l23550737@chihuahua2.tecnm.mx',NULL,'Holamundo_1','IINF','2026-05-07','Yuan Pavolo','Saenzo Lopuz','6143583700','642599840110608405','ajusa._','ImMaxmare',NULL);
 /*!40000 ALTER TABLE `asesores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,6 +90,11 @@ CREATE TABLE `estudiantes` (
   `fechaRegistro` date DEFAULT current_timestamp(),
   `nombre` varchar(60) NOT NULL,
   `apellidos` varchar(60) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `discord` varchar(100) DEFAULT NULL,
+  `instagram` varchar(100) DEFAULT NULL,
+  `facebook` varchar(150) DEFAULT NULL,
+  `twitter` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idEstudiante`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -95,7 +105,7 @@ CREATE TABLE `estudiantes` (
 
 LOCK TABLES `estudiantes` WRITE;
 /*!40000 ALTER TABLE `estudiantes` DISABLE KEYS */;
-INSERT INTO `estudiantes` VALUES (1,'L23550737@chihuahua2.tecnm.mx','23550737','5981761028','IINF','2026-04-14','',''),(2,'L23550738@chihuahua2.tecnm.mx','23550738','15151515a','IINF','2026-04-14','',''),(3,'L23550740@chihuahua2.tecnm.mx','23550740','3197462742','IINF','2026-04-14','',''),(4,'l23550747@chihuahua2.tecnm.mx',NULL,'$2y$10$uunzft5ZJzsTQe1bc5dwN.7rZWU9juWvSGN1P7','IINF','2026-04-19','Juan Pablo','Saenz Lopez');
+INSERT INTO `estudiantes` VALUES (1,'L23550737@chihuahua2.tecnm.mx','23550737','5981761028','IINF','2026-04-14','','','6143583701',NULL,NULL,NULL,NULL),(2,'L23550738@chihuahua2.tecnm.mx','23550738','15151515a','IINF','2026-04-14','','',NULL,NULL,NULL,NULL,NULL),(3,'L23550740@chihuahua2.tecnm.mx','23550740','3197462742','IINF','2026-04-14','','',NULL,NULL,NULL,NULL,NULL),(4,'l23550747@chihuahua2.tecnm.mx','23550701','4263765867','IINF','2026-04-19','Juan Pablo','Saenz Lopez',NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `estudiantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,12 +117,17 @@ DROP TABLE IF EXISTS `historial_sesiones`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `historial_sesiones` (
-  `idSesion` int(11) NOT NULL,
+  `idSesion` int(11) NOT NULL AUTO_INCREMENT,
   `idAsesor` int(11) NOT NULL,
   `idEstudiante` int(11) NOT NULL,
-  `materia` varchar(45) NOT NULL,
-  `fecha` date NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`idSesion`)
+  `fechaInicio` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fechaFin` timestamp NULL DEFAULT NULL,
+  `estado` enum('activa','finalizada','cancelada') DEFAULT 'activa',
+  PRIMARY KEY (`idSesion`),
+  KEY `idAsesor` (`idAsesor`),
+  KEY `idEstudiante` (`idEstudiante`),
+  CONSTRAINT `historial_sesiones_ibfk_1` FOREIGN KEY (`idAsesor`) REFERENCES `asesores` (`idAsesor`),
+  CONSTRAINT `historial_sesiones_ibfk_2` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -148,6 +163,36 @@ LOCK TABLES `materias` WRITE;
 INSERT INTO `materias` VALUES (1,'Fisica'),(2,'Calculo Diferencial'),(3,'Administracion de la Funcion Informatica'),(4,'Calculo Integral'),(5,'Programacion Orientada a Objetos');
 /*!40000 ALTER TABLE `materias` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `solicitudes_asesoria`
+--
+
+DROP TABLE IF EXISTS `solicitudes_asesoria`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `solicitudes_asesoria` (
+  `idSolicitud` int(11) NOT NULL AUTO_INCREMENT,
+  `idAsesor` int(11) NOT NULL,
+  `idEstudiante` int(11) NOT NULL,
+  `estado` enum('pendiente','aceptada','rechazada','cancelada') DEFAULT 'pendiente',
+  `fechaSolicitud` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idSolicitud`),
+  KEY `idAsesor` (`idAsesor`),
+  KEY `idEstudiante` (`idEstudiante`),
+  CONSTRAINT `solicitudes_asesoria_ibfk_1` FOREIGN KEY (`idAsesor`) REFERENCES `asesores` (`idAsesor`),
+  CONSTRAINT `solicitudes_asesoria_ibfk_2` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`idEstudiante`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `solicitudes_asesoria`
+--
+
+LOCK TABLES `solicitudes_asesoria` WRITE;
+/*!40000 ALTER TABLE `solicitudes_asesoria` DISABLE KEYS */;
+/*!40000 ALTER TABLE `solicitudes_asesoria` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -158,4 +203,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-19 23:39:12
+-- Dump completed on 2026-05-07  5:11:18

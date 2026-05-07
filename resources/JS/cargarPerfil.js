@@ -65,7 +65,7 @@ document.addEventListener('load', function () {
                 let telefonoPerfil = document.getElementById("telefonoPerfil");
                 telefonoPerfil.textContent = infoAsesor.contacto;
 
-                let igPerfil = document.getElementById("idPerfil");
+                let igPerfil = document.getElementById("igPerfil");
                 igPerfil.textContent = "FAHHHHHHHH";
 
                 let tipoPerfil = document.getElementById("tipoPerfil");

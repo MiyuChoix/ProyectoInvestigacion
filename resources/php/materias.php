@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+session_start();
 require_once($_SERVER['DOCUMENT_ROOT'] . './cositas/Asesorias/resources/php/conn.php');
 
 $obj_conexion = new ConexionBD();
@@ -33,7 +34,7 @@ if (is_null($conn)) {
 
         $registro = $stmt->fetchAll();
         $mensaje = $registro;
-
+        
     } else {
         $error = 101;
     }

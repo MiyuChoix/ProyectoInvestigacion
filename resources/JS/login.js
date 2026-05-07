@@ -17,6 +17,7 @@ function formSubmit(event) {
             correo: correo,
             pass: password
         }
+        
         fetch("/cositas/Asesorias/resources/php/logueo.php", {
             method: 'POST',
             body: JSON.stringify(datos),

@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once($_SERVER['DOCUMENT_ROOT'] . './cositas/Asesorias/resources/php/conn.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . './cositas/Asesorias/resources/php/sessionAdmin.php');
 
 $obj_conexion = new ConexionBD();
 $conn = $obj_conexion->getConexion();
@@ -70,7 +71,9 @@ if (
             try{
 
             $qry_insertar = "INSERT INTO $rol (correo, nControl, contrasena, carrera, nombre, apellidos) 
-                VALUES (:correo, NULL, :contrasena, :carrera, :nombre, :apellidos)";
+                VALUES (:correo, NULL, :contrasena, :carrera, :nombre, :apellidos);
+                
+                SELECT idEstudiante FROM estudiantes WHERE correo = :correo;";
 
             $stmt = $conn->prepare($qry_insertar);
             $stmt->bindParam(':correo', $correo);
@@ -87,6 +90,19 @@ if (
             if ($stmt->rowCount() == 1) {
                 $mensaje = "OK";
                 $error = 0;
+
+                try{
+                $registro = $stmt->fetch();
+                    session_regenerate_id(true);
+                    $_SESSION['ID'] = $registro['idEstudiante'];
+                    $_SESSION['ROL'] = 'estudiante';
+                    $_SESSION['BLOCK'] = false;
+                    $_SESSION['ACCESO'] = time();
+                }catch(Exception $e){
+                        $error = 101;
+                        $debug = $registro;
+                }
+
             } else {
                 $error = 101;
             }
@@ -101,13 +117,11 @@ if (
     $error = 2;
 }
 
-$datos['mensaje'] = $mensaje;
-$datos['error'] = $error;
-
-// debug
-if (isset($debug)) {
-    $datos["debug"] = $debug;
-}
+$datos = [
+    "mensaje" => $mensaje,
+    "error" => $error,
+    "debug" => $debug ?? null
+];
 
 header('Content-type: application/json; charset=utf-8');
 echo json_encode($datos)
