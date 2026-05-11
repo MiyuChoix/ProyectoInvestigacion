@@ -18,7 +18,7 @@ window.addEventListener("load", function(){
 		})
 		.then(respuesta=>{
 			//return respuesta.text();
-			return respuesta.json();
+			return respuesta.text();
 		})
 		.then(datos=>{
             console.log(datos.mensaje);

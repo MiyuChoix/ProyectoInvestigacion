@@ -15,7 +15,7 @@ session_start();
 
 // sesion
 if (!isset($_SESSION['ID'])) {
-    header("Location: login.html");
+    header("Location: bienvenida");
     exit;
 }
 
@@ -25,7 +25,7 @@ if (!isset($_SESSION['ID'])) {
 if(isset($_SESSION['BLOCK']) && $_SESSION['BLOCK'] === true){
     session_unset();
     session_destroy();
-    header("Location: login.html?expirado=1");
+    header("Location: bienvenida?expirado=1");
     exit;
 }
 
@@ -38,7 +38,7 @@ if (isset($_SESSION['ACCESO'])) {
         session_unset();
         session_destroy();
 
-        header("Location: login.html?expirado=1");
+        header("Location: bienvenida?expirado=1");
         exit;
     }
 

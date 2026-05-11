@@ -7,9 +7,13 @@ Class ConexionBD {
     private $mensaje;
 
 	public function __construct( ) {
-        $this->dsn = "mysql:host=localhost:3306; dbname=asesoria";
-	    $this->username  = 'root';
-	    $this->password  = '';
+        // $this->dsn = "mysql:host=localhost:3306; dbname=asesoria";
+	    // $this->username  = 'root';
+	    // $this->password  = '';
+
+        $this->dsn = "mysql:host=asesorias.chispasandgloss.com; dbname=u339075491_asesorias";
+	    $this->username  = 'u339075491_juan_xd';
+	    $this->password  = 'Hello_mipana_87';
 
         try{ 
             $this->conexion = new PDO( $this->dsn, $this->username, $this->password);

@@ -56,39 +56,35 @@ session_start();
             border-radius: 15px;
             overflow: hidden;
             border: none;
+            background-color: #6a0dad;
+            color: white;
+
+            font-weight: bold;
+
+            text-align: center;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .card-custom:hover {
+
+            background-color: #8a2be2;
+
+            transform: translateY(-2px);
+
         }
 
         .card-footer-custom {
             background-color: #6a0dad;
             height: 25px;
         }
-
-        .materia-btn{
-
-    background-color: #6a0dad;
-    color: white;
-
-    font-weight: bold;
-
-    text-align: center;
-
-    padding: 20px;
-
-    border-radius: 15px;
-
-    cursor: pointer;
-
-    transition: all 0.2s ease;
-
-}
-
-.materia-btn:hover{
-
-    background-color: #8a2be2;
-
-    transform: translateY(-2px);
-
-}
 
         /* Estilo para modal de asesores */
         .asesor-card {
@@ -114,7 +110,76 @@ session_start();
             padding-left: 16px;
             padding-right: 16px;
         }
+        .modal-content {
+    border-radius: 20px;
+    overflow: hidden;
+}
 
+.form-control,
+.form-select {
+    border-radius: 12px;
+    padding: 12px;
+}
+
+#btnEnviarSolicitud {
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+#btnEnviarSolicitud:hover {
+    transform: translateY(-2px);
+}
+
+.sesion-card{
+
+    border-radius: 18px;
+
+    border: none;
+
+    transition: 0.2s ease;
+
+    box-shadow: 0 5px 10px rgba(0,0,0,0.08);
+
+}
+
+.sesion-card:hover{
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 15px 20px rgba(0,0,0,0.15);
+
+}
+
+.estado-badge{
+
+    font-size: 0.85rem;
+
+    padding: 8px 12px;
+
+    border-radius: 999px;
+
+    user-select: none;
+}
+
+.estado-pendiente{
+    background: #ffc107;
+    color: black;
+}
+
+.estado-aceptada{
+    background: #198754;
+    color: white;
+}
+
+.estado-terminada{
+    background: #0d6efd;
+    color: white;
+}
+
+.estado-cancelada{
+    background: #dc3545;
+    color: white;
+}
     </style>
 </head>
 
@@ -128,7 +193,7 @@ session_start();
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav me-auto ms-4">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="/cositas/Asesorias/">Inicio</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Mis sesiones</a>
@@ -138,14 +203,19 @@ session_start();
                 <?php if ($_SESSION['ROL'] === 'asesor'): ?>
 
                     <button class="btn btn-success me-3"
-                        id="btnInvitar">
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalSesion">
+
                         Iniciar asesoría
+
                     </button>
 
                 <?php endif; ?>
                 <div>
                     <a class="navbar-brand" href="/cositas/Asesorias/perfil/?rol=<?php echo $_SESSION['ROL']; ?>&id=<?php echo $_SESSION['ID']; ?>">
-                        <img src="/cositas/Asesorias/resources/uploads/perfiles/perfil_<?php echo $_SESSION['ROL'] . "_" . $_SESSION['ID']; ?>.png" class="profile-img">
+                        <input type="hidden" id="id" value="<?php echo $_SESSION['ID']; ?>">
+                        <input type="hidden" id="rol" value="<?php echo $_SESSION['ROL']; ?>">
+                        <img id="imagenPerfil" class="profile-img object-fit-cover">
                     </a>
                 </div>
             </div>
@@ -158,35 +228,170 @@ session_start();
         </div>
     </div>
     <hr>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold">Materias</h5>
-        </div>
 
-        <div id="contenedorMaterias" class="row g-3 mb-4">
-            <!-- la clase "col-md-#" es la que controla cuantos elementos van dentro de las columnas antes de cambiar de linea.
+    <?php if ($_SESSION['ROL'] === 'estudiante'): ?>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold">Materias</h5>
+            </div>
+
+
+            <div id="contenedorMaterias" class="row g-3 mb-4">
+                <!-- la clase "col-md-#" es la que controla cuantos elementos van dentro de las columnas antes de cambiar de linea.
                          bootstrap utiliza un sistema de 12 columnas para colocar sus elementos, asi que colocando un valor de 4 se haria
                          el calculo 12/4 y terminaria con 3 elementos por fila.-->
+            </div>
         </div>
-    </div>
-    <div class="modal fade" id="modalAsesores" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">Asesores disponibles</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal fade" id="modalAsesores" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Asesores disponibles</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div id="modalCuerpo" class="modal-body">
+
+                    </div>
+
                 </div>
+            </div>
+        </div>
 
-                <div id="modalCuerpo" class="modal-body">
+    <?php endif; ?>
+
+    <?php if ($_SESSION['ROL'] === 'asesor'): ?>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold">Sesiones</h5>
+            </div>
+
+
+            <div id="contenedorSesiones" class="row g-3 mb-4">
+
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalSesion" tabindex="-1">
+
+            <div class="modal-dialog modal-dialog-centered">
+
+                <div class="modal-content border-0 shadow-lg">
+
+                    <div class="modal-header bg-dark text-white">
+
+                        <h5 class="modal-title fw-bold">
+                            Nueva asesoría
+                        </h5>
+
+                        <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body p-4">
+
+                        <!-- ID ESTUDIANTE -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                ID del estudiante
+                            </label>
+
+                            <input type="number"
+                                id="inputIdEstudiante"
+                                class="form-control"
+                                placeholder="Ejemplo: 15">
+
+                        </div>
+
+                        <!-- MATERIA -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Materia
+                            </label>
+
+                            <select id="inputMateria"
+                                class="form-select">
+
+                                <option value="">
+                                    Selecciona una materia
+                                </option>
+                                
+
+                            </select>
+
+                        </div>
+
+                        <!-- FECHA -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Fecha acordada
+                            </label>
+
+                            <input type="datetime-local"
+                                id="inputFecha"
+                                class="form-control">
+
+                        </div>
+
+                        <!-- BOTÓN -->
+
+                        <button class="btn btn-success w-100 py-2 fw-bold"
+                            id="btnEnviarSolicitud">
+
+                            Enviar solicitud
+
+                        </button>
+
+                    </div>
 
                 </div>
 
             </div>
-        </div>
-    </div>
-</body>
 
-<script src="/cositas/Asesorias/resources/js/cargarMaterias.js?v=" <?php echo time(); ?>></script>
+        </div>
+
+    <?php endif; ?>
+
+    <div
+    id="contenedorNotificaciones"
+    class="toast-container position-fixed bottom-0 start-0 p-3"
+    style="z-index: 9999;"
+></div>
+
+</body>
+<!-- Redirige cuando no hay $_SESSION['ID'], ESTE SNIPPET SE IMPLEMENTA EN TODOS LOS ARCHIVOS -->
+<?php if (!isset($_SESSION['ID'])): ?>
+
+    <script>
+        window.location.href = "/cositas/Asesorias/bienvenida/";
+    </script>
+
+<?php endif; ?>
+
+<?php if ($_SESSION['ROL'] === 'estudiante'): ?>
+
+    <script src="/cositas/Asesorias/resources/js/cargarMaterias.js?v=" <?php echo time(); ?>></script>
+
+<?php endif; ?>
+
+<?php if ($_SESSION['ROL'] === 'asesor'): ?>
+
+    <script src="/cositas/Asesorias/resources/js/adminSesionAsesoria.js?v=" <?php echo time(); ?>></script>
+    
+<?php endif; ?>
+
 
 </html>

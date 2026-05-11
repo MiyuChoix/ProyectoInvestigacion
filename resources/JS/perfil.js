@@ -262,6 +262,7 @@ async function guardarPerfil() {
         await subirFotoPerfil(archivo);
     }
 
+    alert('Perfil actualizado');
 }
 
 function cargarImagenPerfil(rol, id) {

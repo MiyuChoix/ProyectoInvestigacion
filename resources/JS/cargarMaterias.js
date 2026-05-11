@@ -2,9 +2,13 @@ let arregloMaterias = [];
 
 window.addEventListener("load", function () {
 
+    cargarImagenPerfil(document.getElementById("rol").value, document.getElementById("id").value);
+
+    revisarSolicitudes();
+
     setInterval(() => {
         revisarSolicitudes();
-    }, 5000);
+    }, 15000);
 
     // Boton, busqueda de materias
     let inputBusqueda = document.getElementById("inputBusqueda");
@@ -70,7 +74,7 @@ function renderMaterias(arreglo) {
         divCol.classList.add("col-md-4");
 
         let divCard = document.createElement("div");
-        divCard.classList.add("card", "card-custom", "materia-btn");
+        divCard.classList.add("card", "card-custom");
 
         let boton = document.createElement("div");
         boton.setAttribute("data-bs-toggle", "modal");
@@ -167,7 +171,7 @@ function cargarModalAsesores(idMateria) {
                         .addEventListener('click', () => {
 
                             window.location =
-                                "/cositas/Asesorias/perfil/index.php?rol=asesor&id=" +
+                                "/cositas/Asesorias/perfil/?rol=asesor&id=" +
                                 asesor.idAsesor;
 
                         });
@@ -182,3 +186,209 @@ function cargarModalAsesores(idMateria) {
         });
 }
 
+let solicitudesMostradas = [];
+
+async function revisarSolicitudes() {
+
+    try {
+
+        const respuesta = await fetch(
+            '/cositas/Asesorias/resources/php/revisarSolicitudes.php'
+        );
+
+        const datos = await respuesta.json();
+
+        console.log(datos);
+
+        if (datos.mensaje !== 'OK') {
+            return;
+        }
+
+        datos.sesiones.forEach(sesion => {
+
+            if (
+                solicitudesMostradas.includes(
+                    sesion.idSolicitud
+                )
+            ) {
+                return;
+            }
+
+            solicitudesMostradas.push(
+                sesion.idSolicitud
+            );
+
+            mostrarNotificacion(sesion);
+
+        });
+
+    } catch(error) {
+
+        console.log(error);
+
+    }
+
+}
+
+function mostrarNotificacion(sesion) {
+
+    const contenedor =
+        document.getElementById(
+            'contenedorNotificaciones'
+        );
+
+    const toast =
+        document.createElement('div');
+
+    toast.classList.add(
+        'toast',
+        'show',
+        'mb-3'
+    );
+
+    toast.innerHTML = `
+
+        <div class="toast-header">
+
+            <strong class="me-auto">
+
+                Nueva asesoría
+
+            </strong>
+
+            <small>
+                pendiente
+            </small>
+
+        </div>
+
+        <div class="toast-body">
+
+            <div class="mb-2">
+
+                <strong>Asesor:</strong>
+                ${sesion.nombre}
+                ${sesion.apellidos}
+
+                <br>
+
+                <strong>Materia:</strong>
+                ${sesion.materia}
+
+                <br>
+
+                <strong>Fecha:</strong>
+                ${sesion.fecha}
+
+            </div>
+
+            <div class="d-flex gap-2">
+
+                <button
+                    class="btn btn-success btn-sm aceptar-btn">
+
+                    Aceptar
+
+                </button>
+
+                <button
+                    class="btn btn-danger btn-sm rechazar-btn">
+
+                    Rechazar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+    contenedor.appendChild(toast);
+
+    toast
+        .querySelector('.aceptar-btn')
+        .addEventListener(
+            'click',
+            async () => {
+
+                await actualizarSesion(
+                    sesion.idSolicitud,
+                    'aceptada'
+                );
+
+                toast.remove();
+
+            }
+        );
+
+    toast
+        .querySelector('.rechazar-btn')
+        .addEventListener(
+            'click',
+            async () => {
+
+                await actualizarSesion(
+                    sesion.idSolicitud,
+                    'cancelada'
+                );
+
+                toast.remove();
+
+            }
+        );
+
+}
+
+async function actualizarSesion(
+    idSolicitud,
+    estado
+) {
+
+    try {
+
+        const respuesta = await fetch(
+            '/cositas/Asesorias/resources/php/actualizarSesion.php',
+            {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    idSolicitud,
+                    estado
+                })
+            }
+        );
+
+        const datos =
+            await respuesta.json();
+
+        console.log(datos);
+
+    } catch(error) {
+
+        console.log(error);
+
+    }
+
+}
+
+function cargarImagenPerfil(rol, id) {
+
+    const imagen =
+        document.getElementById('imagenPerfil');
+
+    imagen.src =
+        `/cositas/Asesorias/resources/uploads/perfiles/perfil_${rol}_${id}.png`;
+
+    imagen.onerror = function () {
+
+        this.onerror = null;
+
+        this.src =
+            '/cositas/Asesorias/resources/img/default.png';
+    };
+}
