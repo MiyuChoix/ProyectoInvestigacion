@@ -196,7 +196,7 @@ session_start();
                         <a class="nav-link" href="/cositas/Asesorias/">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Mis sesiones</a>
+                        <a class="nav-link" href="/cositas/Asesorias/historial">Mis sesiones</a>
                     </li>
                 </ul>
 
@@ -221,6 +221,9 @@ session_start();
             </div>
         </div>
     </nav>
+
+    <?php if ($_SESSION['ROL'] === 'estudiante'): ?>
+
     <div class="search-box">
         <div class="input-group">
             <input id="inputBusqueda" class="form-control search-input  me-2" type="text" placeholder="Buscar materias... (Calculo, Fisica, etc.)">
@@ -228,6 +231,8 @@ session_start();
         </div>
     </div>
     <hr>
+
+<?php endif; ?>
 
     <?php if ($_SESSION['ROL'] === 'estudiante'): ?>
 
@@ -242,6 +247,10 @@ session_start();
                          bootstrap utiliza un sistema de 12 columnas para colocar sus elementos, asi que colocando un valor de 4 se haria
                          el calculo 12/4 y terminaria con 3 elementos por fila.-->
             </div>
+            <div
+    id="paginacionMaterias"
+    class="d-flex justify-content-center gap-2 mt-4">
+</div>
         </div>
 
         <div class="modal fade" id="modalAsesores" tabindex="-1">

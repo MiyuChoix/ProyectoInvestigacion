@@ -2,7 +2,12 @@ window.addEventListener('load', () => {
 
     cargarMaterias();
 
+    const contenedor =
+        document.getElementById('contenedorSesiones');
+    
+    if(contenedor){
     cargarSesiones();
+    }
 
     cargarImagenPerfil(document.getElementById("rol").value, document.getElementById("id").value);
     // refresca cada minuto
@@ -147,7 +152,15 @@ function renderSesiones(sesiones) {
 
     contenedor.innerHTML = '';
 
-    if (sesiones.length === 0) {
+    const sesionesVisibles =
+        sesiones.filter(sesion =>
+
+            sesion.estado !== 'cancelada' &&
+            sesion.estado !== 'terminada'
+
+        );
+    
+    if (sesionesVisibles.length === 0) {
 
         contenedor.innerHTML = `
 
@@ -167,7 +180,9 @@ function renderSesiones(sesiones) {
 
     }
 
-    sesiones.forEach(sesion => {
+    console.log(sesionesVisibles);
+
+    sesionesVisibles.forEach(sesion => {
 
         const col =
             document.createElement('div');

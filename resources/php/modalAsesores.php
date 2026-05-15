@@ -6,7 +6,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . './cositas/Asesorias/resources/php/conn
 
 $obj_conexion = new ConexionBD();
 $conn = $obj_conexion->getConexion();
-
+session_start();
 
 $mensaje = "error";
 $error = 1;
@@ -27,13 +27,22 @@ if (isset($datos_request['idMateria'])) {
 
         $qry_ingresar = "SELECT a.*
 FROM asesores a
-INNER JOIN asesor_materias am ON a.idAsesor = am.idAsesor
-WHERE am.idMateria = :idMateria";
+INNER JOIN asesor_materias am
+ON a.idAsesor = am.idAsesor
+
+LEFT JOIN reportes r
+ON r.idReportado = a.idAsesor
+AND r.idReportante = :idReportante
+
+WHERE am.idMateria = :idMateria
+
+AND r.idReportado IS NULL;";
 
 
         $stmt = $conn->prepare($qry_ingresar);
         // se le asigna un valor a la variable :idMateria, dentro del query
         $stmt->bindParam(':idMateria', $idMateria);
+        $stmt->bindParam(':idReportante', $_SESSION['ID']);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 

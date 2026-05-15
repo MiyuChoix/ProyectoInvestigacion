@@ -62,10 +62,25 @@ $query = "
            $columna_id AS id
     FROM $tabla
     WHERE $columna_id = :id
+
+    AND $columna_id NOT IN (
+
+    SELECT idReportado
+
+    FROM reportes
+
+    WHERE
+        idReportante = :reportante_id
+    AND
+        rolReportado = :rol
+
+)
 ";
 
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':id', $id);
+$stmt->bindParam(':rol', $rol);
+$stmt->bindParam(':reportante_id', $_SESSION['ID']);
 $stmt->execute();
 
 $info = $stmt->fetch(PDO::FETCH_ASSOC);

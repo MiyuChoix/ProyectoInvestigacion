@@ -41,6 +41,20 @@ ON s.idMateria = m.idMateria
 WHERE
     s.idEstudiante = :idEstudiante
     AND s.estado = 'pendiente'
+    AND NOT EXISTS (
+
+    SELECT 1
+
+    FROM reportes r
+
+    WHERE
+        r.idReportante = :idReportante
+    AND
+        r.rolReportado = 'asesor'
+    AND
+        r.idReportado = a.idAsesor
+
+)
 
 ORDER BY s.fecha DESC
 
@@ -48,10 +62,8 @@ ORDER BY s.fecha DESC
 
 $stmt = $conn->prepare($query);
 
-$stmt->bindParam(
-    ':idEstudiante',
-    $_SESSION['ID']
-);
+$stmt->bindParam(':idEstudiante',$_SESSION['ID']);
+$stmt->bindParam(':idReportante', $_SESSION['ID']);
 
 $stmt->execute();
 

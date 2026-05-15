@@ -1,4 +1,19 @@
+let overlay;
+let rol;
+let id;
+
 window.addEventListener('DOMContentLoaded', async function () {
+
+            let mensaje = document.getElementById('ms');
+            let btn = document.getElementById("show1");
+            overlay = document.getElementById("overlay");
+
+            document.getElementById("cerrar").addEventListener("click", function () {
+                mensaje.close();
+                overlay.style.display = "flex";
+            });
+
+            document.getElementById('btnEnviarReporte').addEventListener('click', enviarReporte);
 
     document.getElementById('inputFoto').addEventListener('change', function () {
 
@@ -21,8 +36,8 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     const params = new URLSearchParams(window.location.search);
 
-    const rol = params.get('rol');
-    const id = params.get('id');
+    rol = params.get('rol');
+    id = params.get('id');
 
     if (!rol || !id) {
         window.location.href = '/cositas/Asesorias/index.html';
@@ -48,20 +63,24 @@ window.addEventListener('DOMContentLoaded', async function () {
 
         if (datos.mensaje !== 'OK') {
             console.log(datos);
+            overlay.style.display = "flex";
             return;
         }
 
         const info = datos.info;
 
-        cargarPerfil(info, datos.rol);
-        cargarContactos(info);
-        cargarImagenPerfil(datos.rol, info.id);
+            cargarPerfil(info, datos.rol);
+            cargarContactos(info);
+            cargarImagenPerfil(datos.rol, info.id);
 
         if (datos.rol === 'asesor') {
             cargarMaterias(datos.materias);
         }
 
         if (datos.propio) {
+            if(btn){
+                btn.remove()
+            }
             mostrarBotonEditar(info);
         } else {
             const offcanvas = document.getElementById('editarPerfil');
@@ -111,8 +130,7 @@ function cargarContactos(info) {
         },
         {
             valor: info.discord,
-            icono: 'bi-discord',
-            link: `https://discordapp.com/users/${info.discord}`
+            icono: 'bi-discord'
         },
         {
             valor: info.twitter,
@@ -210,7 +228,6 @@ function mostrarBotonEditar(info) {
     setValue('editFacebook', info.facebook);
 
     document.getElementById('guardarPerfilBtn').addEventListener('click', guardarPerfil);
-
 
 }
 
@@ -334,4 +351,62 @@ function setValue(id, valor) {
         elemento.value = valor || '';
 
     }
+}
+
+async function enviarReporte() {
+
+    const datos = {
+
+        idReportado:
+            id,
+
+        rolReportado:
+            rol,
+
+        motivo:
+            document.getElementById(
+                'inputMotivo'
+            ).value,
+
+        descripcion:
+            document.getElementById(
+                'inputDescripcion'
+            ).value
+
+    };
+
+    try {
+
+        const respuesta = await fetch(
+            '/cositas/Asesorias/resources/php/reportarPerfil.php',
+            {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(datos)
+            }
+        );
+
+        const resultado =
+            await respuesta.json();
+
+        console.log(resultado);
+
+        if(resultado.mensaje === 'OK'){
+
+            alert('Reporte enviado');
+
+            location.reload();
+
+        }
+
+    } catch(error){
+
+        console.log(error);
+
+    }
+
 }

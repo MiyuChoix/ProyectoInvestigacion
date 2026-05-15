@@ -1,4 +1,7 @@
-let arregloMaterias = [];
+let paginaActual = 1;
+let limite = 6;
+let totalPaginas = 1;
+let todasLasMaterias = [];
 
 window.addEventListener("load", function () {
 
@@ -23,46 +26,99 @@ window.addEventListener("load", function () {
         renderMaterias(filtradas);
     });
 
-
-
-    let contenedor = document.getElementById("contenedorMaterias");
-
-    fetch("/cositas/Asesorias/resources/php/materias.php", {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(respuesta => {
-            return respuesta.json();
-        })
-        .then(datos => {
-            if (datos.mensaje == "error") {
-                switch (datos.error) {
-                    case 1: console.log("No se. N. Error: 1");
-                        break;
-
-                    case 100: console.log("La conexion es nula en el PHP. N. Error: 100");
-                        break;
-
-                    case 101: console.log("Error en la base de datos, no retorno filas. N. Error: 101");
-                        break;
-
-                    default: console.log("Error desconocido.");
-                        break;
-                }
-            } else {
-
-                arregloMaterias = datos.mensaje;
-                renderMaterias(arregloMaterias);
-
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    cargarMaterias();
 
 });
+
+async function cargarMaterias() {
+
+    try {
+
+        const respuesta = await fetch(
+
+            `/cositas/Asesorias/resources/php/materias.php?pagina=${paginaActual}&limite=${limite}`
+
+        );
+
+        const datos = await respuesta.json();
+
+        console.log(datos);
+
+        if(datos.mensaje !== 'OK'){
+            return;
+        }
+
+        todasLasMaterias = datos.materias;
+
+        totalPaginas = datos.totalPaginas;
+
+        renderMaterias(todasLasMaterias);
+
+        renderPaginacion();
+
+    } catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+function renderPaginacion() {
+
+    const contenedor =
+        document.getElementById(
+            'paginacionMaterias'
+        );
+
+    contenedor.innerHTML = '';
+
+    for(
+        let i = 1;
+        i <= totalPaginas;
+        i++
+    ){
+
+        const btn =
+            document.createElement('button');
+
+        btn.classList.add(
+            'btn',
+            'btn-sm'
+        );
+
+        if(i === paginaActual){
+
+            btn.classList.add(
+                'btn-dark'
+            );
+
+        }else{
+
+            btn.classList.add(
+                'btn-outline-dark'
+            );
+
+        }
+
+        btn.textContent = i;
+
+        btn.addEventListener(
+            'click',
+            () => {
+
+                paginaActual = i;
+
+                cargarMaterias();
+
+            }
+        );
+
+        contenedor.appendChild(btn);
+
+    }
+
+}
 
 function renderMaterias(arreglo) {
     let contenedor = document.getElementById("contenedorMaterias");
