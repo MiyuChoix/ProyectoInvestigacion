@@ -40,13 +40,13 @@ if (
     } else {
 
         if ($rol == "asesor") {
-            $rol = "asesores";
+            $rol2 = "asesores";
         } else {
-            $rol = "estudiantes";
+            $rol2 = "estudiantes";
         }
 
         $qry_checar = "SELECT nombre
-        FROM $rol
+        FROM $rol2
         where correo = :correo";
 
         // elimine la columna semestre
@@ -70,7 +70,7 @@ if (
 
             try{
 
-            $qry_insertar = "INSERT INTO $rol (correo, nControl, contrasena, carrera, nombre, apellidos) 
+            $qry_insertar = "INSERT INTO $rol2 (correo, nControl, contrasena, carrera, nombre, apellidos) 
                 VALUES (:correo, NULL, :contrasena, :carrera, :nombre, :apellidos);
                 
                 SELECT idEstudiante FROM estudiantes WHERE correo = :correo;";
@@ -95,7 +95,7 @@ if (
                 $registro = $stmt->fetch();
                     session_regenerate_id(true);
                     $_SESSION['ID'] = $registro['idEstudiante'];
-                    $_SESSION['ROL'] = 'estudiante';
+                    $_SESSION['ROL'] = $rol;
                     $_SESSION['BLOCK'] = false;
                     $_SESSION['ACCESO'] = time();
                 }catch(Exception $e){

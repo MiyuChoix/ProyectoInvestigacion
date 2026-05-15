@@ -1,6 +1,5 @@
 window.addEventListener("load", function () {
     document.getElementById('form').addEventListener("submit", formSubmit);
-    console.log("Hola mundo, se activo el evento LOAD. :)");
 });
 
 function formSubmit(event) {
